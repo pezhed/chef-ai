@@ -1,0 +1,26 @@
+const itemsIn = $input.all();
+
+const weekId = $json.week_id || new Date().toISOString().slice(0, 10);
+const servings = $json.servings || 4;
+
+const titles = itemsIn.map((item, idx) => `${idx + 1}. ${item.json.recipe_title}`).join('\n');
+
+const body = itemsIn.map(item => item.json.markdown).join('\n\n---\n\n');
+
+const markdown = `# Weekly Recipe Packet
+
+**Week ID:** ${weekId}  
+**Servings per recipe:** ${servings}  
+
+## Recipes This Week
+${titles}
+
+---
+
+${body}
+`;
+
+return [{
+  week_id: weekId,
+  weekly_packet_markdown: markdown
+}];

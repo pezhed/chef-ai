@@ -1,0 +1,45 @@
+{
+  "recipe_id": "string",
+  "recipe_title": "string",
+  "meal_name": "string",
+  "protein": "string",
+  "category": "meat|non_meat",
+  "chosen_type": "string",
+  "base_preparation": "string",
+  "servings": "number",
+  "prep_time_minutes": "integer",
+  "cook_time_minutes": "integer",
+  "total_time_minutes": "integer",
+  "difficulty": "easy|medium",
+  "flavor_profile": ["string"],
+  "equipment": ["string"],
+  "ingredients": [
+    {
+      "item": "string",
+      "amount": "number",
+      "unit": "string",
+      "category": "protein|produce|dairy|pantry|frozen|bakery",
+      "prep_note": "string"
+    }
+  ],
+  "spice_blend": [
+    {
+      "item": "string",
+      "amount": "number",
+      "unit": "string"
+    }
+  ],
+  "instructions": [
+    {
+      "step": "integer",
+      "title": "string",
+      "detail": "string"
+    }
+  ],
+  "chef_notes": ["string"],
+  "storage": {
+    "fridge_days": "integer",
+    "freezer_ok": "boolean",
+    "reheating": "string"
+  }
+}

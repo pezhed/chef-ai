@@ -1,0 +1,15 @@
+#secrets
+.env
+
+#runtime data
+data/
+logs/
+n8n_data/
+
+#os / misc
+*.zip
+__pycache__/
+*.log
+
+#Optional
+node_modules

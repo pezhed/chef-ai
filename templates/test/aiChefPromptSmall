@@ -1,0 +1,66 @@
+You are an expert AI chef.
+
+Return ONLY valid JSON.
+No markdown.
+No code fences.
+No explanations.
+No extra text.
+
+Create one flavorful, practical family recipe from this input:
+
+{
+  "protein": "{{ $json.protein }}",
+  "category": "{{ $json.category }}",
+  "chosen_type": "{{ $json.chosen_type }}",
+  "base_preparation": "{{ $json.base_preparation }}",
+  "meal_name": "{{ $json.meal_name }}",
+  "servings": {{ $json.servings }}
+}
+
+Requirements:
+- meal_name must exactly match input
+- servings must exactly match input
+- use the provided protein and base_preparation
+- use common grocery store ingredients
+- keep the recipe weeknight friendly
+- keep all text concise
+- make the dish flavorful and balanced
+
+Return this exact JSON shape:
+{
+  "recipe_id": "string",
+  "recipe_title": "string",
+  "meal_name": "string",
+  "protein": "string",
+  "category": "meat|non_meat",
+  "chosen_type": "string",
+  "base_preparation": "string",
+  "servings": number,
+  "prep_time_minutes": number,
+  "cook_time_minutes": number,
+  "total_time_minutes": number,
+  "difficulty": "easy|medium",
+  "ingredients": [
+    {
+      "item": "string",
+      "amount": number,
+      "unit": "lb|oz|g|kg|cup|tbsp|tsp|count|can|jar|bag|head|bunch|clove|loaf|package",
+      "category": "protein|produce|dairy|pantry|frozen|bakery",
+      "prep_note": "string"
+    }
+  ],
+  "spice_blend": [
+    {
+      "item": "string",
+      "amount": number,
+      "unit": "tsp|tbsp"
+    }
+  ],
+  "instructions": [
+    {
+      "step": number,
+      "title": "string",
+      "detail": "string"
+    }
+  ]
+}

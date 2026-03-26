@@ -1,0 +1,150 @@
+const recipe = $json;
+
+const errors = [];
+const warnings = [];
+
+// --------------------
+// ENUMS
+// --------------------
+const allowedDifficulty = ["easy", "medium"];
+const allowedCategory = ["meat", "non_meat"];
+const allowedIngredientCategories = ["protein", "produce", "dairy", "pantry", "frozen", "bakery"];
+const allowedUnits = ["lb", "oz", "g", "kg", "cup", "tbsp", "tsp", "count", "can", "jar", "bag", "head", "bunch", "clove", "loaf", "package"];
+
+// --------------------
+// REQUIRED FIELDS
+// --------------------
+const requiredFields = [
+  "recipe_id","recipe_title","meal_name","protein","category","chosen_type",
+  "base_preparation","servings","prep_time_minutes","cook_time_minutes",
+  "total_time_minutes","difficulty","flavor_profile","equipment",
+  "ingredients","spice_blend","instructions","chef_notes","storage"
+];
+
+requiredFields.forEach(f => {
+  if (recipe[f] === undefined || recipe[f] === null) {
+    errors.push(`Missing field: ${f}`);
+  }
+});
+
+// --------------------
+// ENUM CHECKS
+// --------------------
+if (!allowedDifficulty.includes(recipe.difficulty)) {
+  errors.push("Invalid difficulty");
+}
+
+if (!allowedCategory.includes(recipe.category)) {
+  errors.push("Invalid category");
+}
+
+// --------------------
+// NUMERIC CHECKS
+// --------------------
+["servings","prep_time_minutes","cook_time_minutes","total_time_minutes"].forEach(f => {
+  if (typeof recipe[f] !== "number") {
+    errors.push(`${f} must be a number`);
+  }
+});
+
+// --------------------
+// TIME LOGIC
+// --------------------
+if (recipe.prep_time_minutes + recipe.cook_time_minutes !== recipe.total_time_minutes) {
+  errors.push("Time mismatch: prep + cook != total");
+}
+
+// --------------------
+// INGREDIENT VALIDATION
+// --------------------
+if (!Array.isArray(recipe.ingredients) || recipe.ingredients.length === 0) {
+  errors.push("Ingredients missing or empty");
+} else {
+  recipe.ingredients.forEach((i, idx) => {
+    ["item","amount","unit","category","prep_note"].forEach(f => {
+      if (i[f] === undefined) {
+        errors.push(`Ingredient ${idx} missing ${f}`);
+      }
+    });
+
+    if (typeof i.amount !== "number") {
+      errors.push(`Ingredient ${idx} amount must be number`);
+    }
+
+    if (!allowedUnits.includes(i.unit)) {
+      errors.push(`Ingredient ${idx} invalid unit`);
+    }
+
+    if (!allowedIngredientCategories.includes(i.category)) {
+      errors.push(`Ingredient ${idx} invalid category`);
+    }
+  });
+}
+
+// --------------------
+// PROTEIN CHECK
+// --------------------
+const proteinLower = (recipe.protein || "").toLowerCase();
+const hasProtein = recipe.ingredients.some(i =>
+  i.item.toLowerCase().includes(proteinLower)
+);
+
+if (!hasProtein) {
+  errors.push("Protein not found in ingredients");
+}
+
+// --------------------
+// INSTRUCTIONS CHECK
+// --------------------
+if (!Array.isArray(recipe.instructions) || recipe.instructions.length < 3) {
+  errors.push("Invalid instructions");
+} else {
+  recipe.instructions.forEach((s, i) => {
+    if (s.step !== i + 1) {
+      errors.push("Instruction steps not sequential");
+    }
+  });
+}
+
+// --------------------
+// STORAGE CHECK
+// --------------------
+if (
+  typeof recipe.storage.fridge_days !== "number" ||
+  typeof recipe.storage.freezer_ok !== "boolean" ||
+  typeof recipe.storage.reheating !== "string"
+) {
+  errors.push("Invalid storage structure");
+}
+
+// --------------------
+// WARNINGS
+// --------------------
+if (recipe.ingredients.length > 16) {
+  warnings.push("Too many ingredients");
+}
+
+if (recipe.instructions.length > 8) {
+  warnings.push("Too many steps");
+}
+
+if (!recipe.spice_blend || recipe.spice_blend.length === 0) {
+  warnings.push("Missing spice blend");
+}
+
+// --------------------
+// RESULT
+// --------------------
+if (errors.length > 0) {
+  return [{
+    valid: false,
+    errors,
+    raw: recipe
+  }];
+}
+
+return [{
+  valid: true,
+  recipe,
+  warnings
+}];

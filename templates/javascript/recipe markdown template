@@ -1,0 +1,47 @@
+# {{recipe_title}}
+
+**Meal Name:** {{meal_name}}  
+**Protein:** {{protein}}  
+**Base Preparation:** {{base_preparation}}  
+**Servings:** {{servings}}  
+**Prep Time:** {{prep_time_minutes}} minutes  
+**Cook Time:** {{cook_time_minutes}} minutes  
+**Total Time:** {{total_time_minutes}} minutes  
+**Difficulty:** {{difficulty}}
+
+## Flavor Profile
+{{#each flavor_profile}}
+- {{this}}
+{{/each}}
+
+## Equipment
+{{#each equipment}}
+- {{this}}
+{{/each}}
+
+## Ingredients
+{{#each ingredients}}
+- **{{amount}} {{unit}} {{item}}**{{#if prep_note}} — {{prep_note}}{{/if}}
+{{/each}}
+
+## Spice Blend
+{{#each spice_blend}}
+- **{{amount}} {{unit}} {{item}}**
+{{/each}}
+
+## Instructions
+{{#each instructions}}
+### Step {{step}} — {{title}}
+{{detail}}
+
+{{/each}}
+
+## Chef Notes
+{{#each chef_notes}}
+- {{this}}
+{{/each}}
+
+## Storage
+- **Fridge:** {{storage.fridge_days}} days
+- **Freezer:** {{storage.freezer_ok}}
+- **Reheating:** {{storage.reheating}}

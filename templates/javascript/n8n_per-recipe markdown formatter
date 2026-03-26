@@ -1,0 +1,98 @@
+const recipe = $json.recipe || $json;
+
+function yesNo(value) {
+  return value ? "Yes" : "No";
+}
+
+function safeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function formatIngredient(item) {
+  const prepNote = item.prep_note && item.prep_note.trim()
+    ? ` — ${item.prep_note.trim()}`
+    : "";
+  return `- **${item.amount} ${item.unit} ${item.item}**${prepNote}`;
+}
+
+function formatSpice(item) {
+  return `- **${item.amount} ${item.unit} ${item.item}**`;
+}
+
+function formatInstruction(step) {
+  return `### Step ${step.step} — ${step.title}\n${step.detail}`;
+}
+
+const flavorProfile = safeArray(recipe.flavor_profile).length
+  ? safeArray(recipe.flavor_profile).map(x => `- ${x}`).join("\n")
+  : "- None";
+
+const equipment = safeArray(recipe.equipment).length
+  ? safeArray(recipe.equipment).map(x => `- ${x}`).join("\n")
+  : "- None";
+
+const ingredients = safeArray(recipe.ingredients).length
+  ? safeArray(recipe.ingredients).map(formatIngredient).join("\n")
+  : "- None";
+
+const spiceBlend = safeArray(recipe.spice_blend).length
+  ? safeArray(recipe.spice_blend).map(formatSpice).join("\n")
+  : "- None";
+
+const instructions = safeArray(recipe.instructions).length
+  ? safeArray(recipe.instructions).map(formatInstruction).join("\n\n")
+  : "No instructions available.";
+
+const chefNotes = safeArray(recipe.chef_notes).length
+  ? safeArray(recipe.chef_notes).map(x => `- ${x}`).join("\n")
+  : "- None";
+
+const markdown = `# ${recipe.recipe_title}
+
+**Meal Name:** ${recipe.meal_name}  
+**Protein:** ${recipe.protein}  
+**Category:** ${recipe.category}  
+**Chosen Type:** ${recipe.chosen_type}  
+**Base Preparation:** ${recipe.base_preparation}  
+**Servings:** ${recipe.servings}  
+**Prep Time:** ${recipe.prep_time_minutes} minutes  
+**Cook Time:** ${recipe.cook_time_minutes} minutes  
+**Total Time:** ${recipe.total_time_minutes} minutes  
+**Difficulty:** ${recipe.difficulty}  
+
+## Flavor Profile
+${flavorProfile}
+
+## Equipment
+${equipment}
+
+## Ingredients
+${ingredients}
+
+## Spice Blend
+${spiceBlend}
+
+## Instructions
+${instructions}
+
+## Chef Notes
+${chefNotes}
+
+## Storage
+- **Fridge:** ${recipe.storage?.fridge_days ?? "N/A"} days
+- **Freezer:** ${yesNo(recipe.storage?.freezer_ok)}
+- **Reheating:** ${recipe.storage?.reheating ?? "N/A"}
+`;
+
+return [
+  {
+    json: {
+      recipe_id: recipe.recipe_id,
+      recipe_title: recipe.recipe_title,
+      file_name_base: recipe.recipe_id,
+      markdown,
+      recipe_json_string: JSON.stringify(recipe, null, 2),
+      recipe
+    }
+  }
+];

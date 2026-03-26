@@ -1,0 +1,22 @@
+{
+  "recipe_id": "string",
+  "recipe_title": "string",
+  "meal_name": "string",
+  "servings": 4,
+  "ingredients": [
+    {
+      "item": "string",
+      "amount": 1,
+      "unit": "string",
+      "category": "string",
+      "prep_note": "string"
+    }
+  ],
+  "instructions": [
+    {
+      "step": 1,
+      "title": "string",
+      "detail": "string"
+    }
+  ]
+}
